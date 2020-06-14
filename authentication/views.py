@@ -8,7 +8,9 @@ from django.contrib.sessions.backends.base import  SessionBase
 from django.core import serializers
 from sysLog.views import tablesyslog
 from datetime import datetime
+
 # Create your views here.
+
 
 
 
@@ -34,6 +36,15 @@ def register(request):
     else :
         return render(request,"register.html")
 
+def fromto(user):
+  
+    tamps=[user.servers.count()]
+    i=0
+    for s in user.servers :
+        tamps[i]=s.host
+        i=i+1
+    return tamps
+
 def login(request):
     global  user
     user=User()
@@ -46,6 +57,7 @@ def login(request):
             return redirect("login")          
         else :           
             request.session['email'] = user.email
+            #request.session['serverstamps']= "fromto(user)"
             return redirect(loginserver)            
     else:
         return render(request,"login.html")
@@ -62,7 +74,7 @@ def loginserver(request):
                 server.user = request.POST['user']
                 server.password = request.POST['password']
                 src = "C:/log/syslog.1"
-                dst = "E:/4eme/imad/django/log/"
+                dst = "E:/4eme/exam/django/log/"
                 try :                    
                     ssh = createSSHClient(server.host, server.port, server.user, server.password)
                     scp = SCPClient(ssh.get_transport())
@@ -104,7 +116,7 @@ def getmount(mountstr):
     return j
 
 def setsyslog(request):
-    file = open('E:/4eme/imad/django/log/syslog.1', "r")
+    file = open('E:/4eme/exam/django/log/syslog.1', "r")
     lines = file. readlines()
     file.close()
     logs= user.servers.get(host=request.session['server']).syslogs

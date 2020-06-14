@@ -7,3 +7,4 @@ class syslog(EmbeddedDocument):
     date = StringField(required=True)
     service = StringField(required=True)
     message = StringField(required=True)
+
